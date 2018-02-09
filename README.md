@@ -42,7 +42,8 @@
 	+ 退款``refund()``;
 	+ 订单``order()``;
 	+ 通知``notify()``;
-	+ 账单``bill()``。
+	+ 账单``bill()``;
+	+ 转账``transfer()``。
 		
 + API文档[这里](API.md)。
 
