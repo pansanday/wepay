@@ -65,7 +65,7 @@ public class WePayOrder implements Serializable {
     private FeeType feeType;
 
     /**
-     * 微信订单好
+     * 微信订单号
      */
     @JsonProperty(WepayField.TRANSACTION_ID)
     private String transactionId;

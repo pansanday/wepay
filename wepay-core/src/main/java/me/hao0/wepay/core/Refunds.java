@@ -50,7 +50,7 @@ public final class Refunds extends Component {
     public RefundApplyResponse apply(RefundApplyRequest request){
         checkApplyParams(request);
         Map<String, String> applyParams = buildApplyParams(request);
-        return doHttpsPost(APPLY, applyParams, RefundApplyResponse.class);
+        return doHttpsPost(APPLY, applyParams, RefundApplyResponse.class, true);
     }
 
     /**

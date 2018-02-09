@@ -7,13 +7,10 @@ import me.hao0.wepay.model.bill.Bill;
 import me.hao0.wepay.model.bill.BillDetail;
 import me.hao0.wepay.model.bill.CommonBill;
 import me.hao0.wepay.model.bill.RefundBill;
+import me.hao0.wepay.model.enums.NameCheckType;
 import me.hao0.wepay.model.order.WePayOrder;
-import me.hao0.wepay.model.pay.AppPayResponse;
-import me.hao0.wepay.model.pay.JsPayRequest;
-import me.hao0.wepay.model.pay.JsPayResponse;
-import me.hao0.wepay.model.pay.PayRequest;
-import me.hao0.wepay.model.pay.QrPayRequest;
-import me.hao0.wepay.model.pay.QrPayResponse;
+import me.hao0.wepay.model.order.WePayTransfer;
+import me.hao0.wepay.model.pay.*;
 import me.hao0.wepay.model.refund.RefundApplyRequest;
 import me.hao0.wepay.model.refund.RefundApplyResponse;
 import me.hao0.wepay.model.refund.RefundQueryResponse;
@@ -55,8 +52,6 @@ public class WepayTest {
                 //.certPasswd(props.getProperty("mchId"))
                 //.certs(data)
                 .build();
-
-
     }
 
     @Test
@@ -114,6 +109,35 @@ public class WepayTest {
         AppPayResponse resp = wepay.pay().appPay(request);
         assertNotNull(resp);
         System.out.println(resp);
+    }
+
+    /**
+     * 企业付款到零钱(需要证书)
+     */
+    @Test
+    public void testBiz2BalancePay() {
+        BizPayRequest request = new BizPayRequest();
+        request.setPartnerTradeNo("100000982014120919621");
+        request.setOpenId(openId);
+        request.setCheckName(NameCheckType.NO_CHECK);
+        request.setReUserName("王二小");
+        request.setAmount(500);
+        request.setDesc("节日快乐!");
+        request.setClientIp("10.2.3.10");
+
+        BizPayResponse resp = wepay.pay().biz2BalancePay(request);
+        assertNotNull(resp);
+        System.out.println(resp);
+    }
+
+    /**
+     * 根据partnerTradeNo查询企业付款(需要证书)
+     */
+    @Test
+    public void testQueryTransferByPartnerTradeNo() {
+        WePayTransfer transfer = wepay.order().queryByPartnerTradeNo("100000982014120919621");
+        assertNotNull(transfer);
+        System.out.println(transfer);
     }
 
     @Test

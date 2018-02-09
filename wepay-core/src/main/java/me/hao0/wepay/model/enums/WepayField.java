@@ -446,4 +446,79 @@ public final class WepayField {
      */
     public static final String REFUND_RECV_ACCOUNT = "refund_recv_accout";
 
+    /**
+     * 付款单号(调用企业付款API时，微信系统内部产生的单号)
+     */
+    public static final String DETAIL_ID = "detail_id";
+
+    /**
+     * 如果失败则有失败原因
+     */
+    public static final String REASON = "reason";
+
+    /**
+     * 收款用户姓名
+     */
+    public static final String TRANSFER_NAME = "transfer_name";
+
+    /**
+     * 付款金额单位分
+     */
+    public static final String PAYMENT_AMOUNT = "payment_amount";
+
+    /**
+     * 发起转账的时间
+     */
+    public static final String TRANSFER_TIME = "transfer_time";
+
+    /**
+     * SUCCESS:转账成功; FAILED:转账失败; PROCESSING:处理中
+     */
+    public static final String STATUS = "status";
+
+    /**
+     * 申请商户号的appid或商户号绑定的appid（企业号corpid即为此appId）
+     */
+    public static final String MCH_APPID = "mch_appid";
+
+    /**
+     * 微信支付分配的商户号
+     */
+    public static final String MCHID = "mchid";
+
+    /**
+     * 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
+     */
+    public static final String PARTNER_TRADE_NO = "partner_trade_no";
+
+    /**
+     * 企业付款成功，返回的微信订单号
+     */
+    public static final String PAYMENT_NO = "payment_no";
+
+    /**
+     * 企业付款金额，单位为分
+     */
+    public static final String AMOUNT = "amount";
+
+    /**
+     * NO_CHECK：不校验真实姓名;FORCE_CHECK：强校验真实姓名
+     */
+    public static final String CHECK_NAME = "check_name";
+
+    /**
+     * 收款用户真实姓名; 如果check_name设置为FORCE_CHECK，则必填用户真实姓名
+     */
+    @Optional(any = false)
+    public static final String RE_USER_NAME = "re_user_name";
+
+    /**
+     * 企业付款操作说明信息
+     */
+    public static final String DESC = "desc";
+
+    /**
+     * 企业付款成功时间
+     */
+    public static final String PAYMENT_TIME = "payment_time";
 }

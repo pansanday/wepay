@@ -3,19 +3,17 @@ package me.hao0.wepay.core;
 import me.hao0.common.date.Dates;
 import me.hao0.common.security.MD5;
 import me.hao0.wepay.exception.WepayException;
+import me.hao0.wepay.model.enums.NameCheckType;
 import me.hao0.wepay.model.enums.TradeType;
 import me.hao0.wepay.model.enums.WepayField;
-import me.hao0.wepay.model.pay.AppPayResponse;
-import me.hao0.wepay.model.pay.JsPayRequest;
-import me.hao0.wepay.model.pay.JsPayResponse;
-import me.hao0.wepay.model.pay.PayRequest;
-import me.hao0.wepay.model.pay.QrPayRequest;
-import me.hao0.wepay.model.pay.QrPayResponse;
+import me.hao0.wepay.model.pay.*;
 import me.hao0.wepay.util.RandomStrs;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
+
 import static me.hao0.common.util.Preconditions.*;
 
 /**
@@ -31,6 +29,11 @@ public final class Pays extends Component {
      * 统一下单接口
      */
     private static final String PAY_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+
+    /**
+     * 企业付款到零钱接口地址
+     */
+    private static final String BIZ2BALANCE_PAY_URL = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
 
     /**
      * 联图二维码转换
@@ -100,6 +103,41 @@ public final class Pays extends Component {
         checkPayParams(request);
         Map<String, Object> respData = doAppPay(request, TradeType.APP);
         return buildAppPayResp(respData);
+    }
+
+    /**
+     * 企业付款到零钱
+     * @param request 付款请求对象
+     * @return BizPayResponse对象
+     * @see <a href="https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2">企业付款到零钱</a>
+     */
+    public BizPayResponse biz2BalancePay(BizPayRequest request) {
+        checkBizPayParams(request);
+
+        Map<String, String> payParams = buildBizPayParams(request);
+        buildSignParams(payParams);
+
+        return doHttpsPost(BIZ2BALANCE_PAY_URL, payParams, BizPayResponse.class, false);
+    }
+
+    private Map<String, String> buildBizPayParams(BizPayRequest request) {
+        Map<String, String> payParams = new TreeMap<>();
+
+        put(payParams, WepayField.MCH_APPID, wepay.getAppId());
+        put(payParams, WepayField.MCHID, wepay.getMchId());
+        put(payParams, WepayField.NONCE_STR, RandomStrs.generate(16));
+        put(payParams, WepayField.PARTNER_TRADE_NO, request.getPartnerTradeNo());
+        put(payParams, WepayField.OPEN_ID, request.getOpenId());
+        put(payParams, WepayField.CHECK_NAME, request.getCheckName().type());
+        put(payParams, WepayField.AMOUNT, request.getAmount() + "");
+        put(payParams, WepayField.DESC, request.getDesc());
+        put(payParams, WepayField.SPBILL_CREATE_IP, request.getClientIp());
+
+        // 业务可选参数
+        putIfNotEmpty(payParams, WepayField.RE_USER_NAME, request.getReUserName());
+        putIfNotEmpty(payParams, WepayField.DEVICE_INFO, request.getDeviceInfo());
+
+        return payParams;
     }
 
     /**
@@ -190,13 +228,27 @@ public final class Pays extends Component {
         checkNotNullAndEmpty(request.getOpenId(), "openId");
     }
 
+    private void checkBizPayParams(BizPayRequest request) {
+        checkNotNull(request, "pay detail can't be null");
+        checkNotNullAndEmpty(request.getPartnerTradeNo(), "partnerTradeNo");
+        checkNotNullAndEmpty(request.getOpenId(), "openId");
+        checkNotNull(request.getCheckName(), "checkName can't be null");
+        if (request.getCheckName().compareTo(NameCheckType.FORCE_CHECK) == 0) {
+            checkNotNull(request.getReUserName(), "reUserName can't be null");
+        }
+        Integer amount = request.getAmount();
+        checkArgument(amount != null && amount >= 100, "amount must > 100");
+        checkNotNullAndEmpty(request.getDesc(), "openId");
+        checkNotNullAndEmpty(request.getClientIp(), "clientIp");
+    }
+
     private void checkPayParams(PayRequest request) {
         checkNotNull(request, "pay detail can't be null");
         checkNotNullAndEmpty(request.getBody(), "body");
         checkNotNullAndEmpty(request.getOutTradeNo(), "outTradeNo");
         Integer totalFee = request.getTotalFee();
         checkArgument(totalFee != null && totalFee > 0, "totalFee must > 0");
-        checkNotNullAndEmpty(request.getClientIp(), "clientId");
+        checkNotNullAndEmpty(request.getClientIp(), "clientIp");
         checkNotNullAndEmpty(request.getNotifyUrl(), "notifyUrl");
         checkNotNull(request.getFeeType(), "feeType can't be null");
         checkNotNullAndEmpty(request.getTimeStart(), "timeStart");

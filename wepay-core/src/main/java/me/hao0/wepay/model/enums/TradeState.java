@@ -15,6 +15,16 @@ public enum TradeState {
     SUCCESS("SUCCESS"),
 
     /**
+     * 转账失败(企业付款)
+     */
+    FAILED("FAILED"),
+
+    /**
+     * 处理中(企业付款)
+     */
+    PROCESSING("PROCESSING"),
+
+    /**
      * 转入退款
      */
     REFUND("REFUND"),

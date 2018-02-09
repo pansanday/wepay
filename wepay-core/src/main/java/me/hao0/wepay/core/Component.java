@@ -36,12 +36,22 @@ public abstract class Component {
         return respMap;
     }
 
-    protected <T> T doHttpsPost(final String url, final Map<String, String> params, Class<T> respClazz){
+    /**
+     * 发送Https Post请求
+     *
+     * @param url       请求URL
+     * @param params    请求参数
+     * @param respClazz 相应类
+     * @param isVerify  是否需要sign校验(企业付款到零钱无sign返回,无需校验)
+     * @param <T>       返回类型
+     * @return 对象
+     */
+    protected <T> T doHttpsPost(final String url, final Map<String, String> params, Class<T> respClazz, boolean isVerify){
         String requestBody = Maps.toXml(params);
         String resp = Https.post(url).body(requestBody)
                 .ssLSocketFactory(wepay.getSslSocketFactory()).request();
         Map<String, Object> respMap = toMap(resp.replaceAll("(\\r|\\n)", ""));
-        if (!doVerifySign(respMap)){
+        if (isVerify && !doVerifySign(respMap)){
             throw new SignException("微信响应内容签名非法: " + respMap);
         }
         return Jsons.DEFAULT.fromJson(Jsons.DEFAULT.toJson(respMap), respClazz);
