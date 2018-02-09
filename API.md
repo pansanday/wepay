@@ -7,6 +7,7 @@
 	+ 订单: <a href="#order-api">order()</a>
 	+ 通知: <a href="#notify-api">notify()</a>
 	+ 账单: <a href="#bill-api">bill()</a>
+	+ 转账: <a href="#transfer-api">transfer()</a>
 	
 + **<a id="pay-api">支付pay()</a>**:
 
@@ -32,6 +33,13 @@
      * @return AppPayResponse对象，或抛WepayException
      */
     AppPayResponse appPay(PayRequest request);
+   
+   /**
+    * 企业付款到零钱
+    * @param request 付款请求对象
+    * @return BizPayResponse对象
+    */
+    BizPayResponse biz2BalancePay(BizPayRequest request);
 	```
 
 + **<a id="pay-api">退款refund()</a>**:
@@ -150,3 +158,13 @@
      */
     BillDetail<RefundBill> queryRefund(String deviceInfo, String date);
 	```
+	
++ **<a id="transfer-api">转账transfer()</a>**:
+    ```java
+     /**
+      * 根据商户订单号查询企业付款
+      * @param partnerTradeNo 商户调用企业付款API时使用的商户订单号
+      * @return WePayTransfer对象，或抛WepayException
+      */
+      WePayTransfer queryByPartnerTradeNo(String partnerTradeNo);
+    ```
