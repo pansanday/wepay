@@ -76,6 +76,11 @@ public final class Wepay {
      */
     private Bills bills;
 
+    /**
+     * 企业付款组件
+     */
+    private Transfer transfer;
+
     Wepay(String appId, String appKey, String mchId){
         this.appId = appId;
         this.appKey = appKey;
@@ -120,6 +125,7 @@ public final class Wepay {
         refunds = new Refunds(this);
         notifies = new Notifies(this);
         bills = new Bills(this);
+        transfer = new Transfer(this);
         if (certs != null && !Strings.isNullOrEmpty(certPasswd)){
             sslSocketFactory = initSSLSocketFactory();
         }
@@ -184,5 +190,13 @@ public final class Wepay {
      */
     public Bills bill(){
         return bills;
+    }
+
+    /**
+     * 企业付款组件
+     * @return 企业付款组件
+     */
+    public Transfer transfer() {
+        return transfer;
     }
 }

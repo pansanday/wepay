@@ -4,7 +4,6 @@ import me.hao0.common.json.Jsons;
 import me.hao0.wepay.model.common.Coupon;
 import me.hao0.wepay.model.enums.WepayField;
 import me.hao0.wepay.model.order.WePayOrder;
-import me.hao0.wepay.model.order.WePayTransfer;
 import me.hao0.wepay.util.RandomStrs;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +24,6 @@ public final class Orders extends Component {
      * 查询订单
      */
     private static final String ORDER_QUERY = "https://api.mch.weixin.qq.com/pay/orderquery";
-
-    /**
-     * 查询企业付款到零钱
-     */
-    private static final String BIZ2BALANCE_QUERY = "https://api.mch.weixin.qq.com/mmpaymkttransfers/gettransferinfo";
 
     /**
      * 关闭订单
@@ -62,20 +56,6 @@ public final class Orders extends Component {
         Map<String, String> queryParams = new TreeMap<>();
         put(queryParams, WepayField.OUT_TRADE_NO, outTradeNo);
         return doQueryOrder(queryParams);
-    }
-
-    /**
-     * 根据商户订单号查询企业付款
-     * @param partnerTradeNo 商户调用企业付款API时使用的商户订单号
-     * @return WePayTransfer对象，或抛WepayException
-     */
-    public WePayTransfer queryByPartnerTradeNo(String partnerTradeNo) {
-        checkNotNullAndEmpty(partnerTradeNo, "partnerTradeNo");
-        Map<String, String> queryParams = new TreeMap<>();
-        put(queryParams, WepayField.PARTNER_TRADE_NO, partnerTradeNo);
-        buildQueryParams(queryParams);
-
-        return doHttpsPost(BIZ2BALANCE_QUERY, queryParams, WePayTransfer.class, false);
     }
 
     private WePayOrder doQueryOrder(Map<String, String> queryParams) {

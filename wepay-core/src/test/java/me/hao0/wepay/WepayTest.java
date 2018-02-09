@@ -117,7 +117,7 @@ public class WepayTest {
     @Test
     public void testBiz2BalancePay() {
         BizPayRequest request = new BizPayRequest();
-        request.setPartnerTradeNo("100000982014120919621");
+        request.setPartnerTradeNo("100000982014120919622");
         request.setOpenId(openId);
         request.setCheckName(NameCheckType.NO_CHECK);
         request.setReUserName("王二小");
@@ -135,7 +135,7 @@ public class WepayTest {
      */
     @Test
     public void testQueryTransferByPartnerTradeNo() {
-        WePayTransfer transfer = wepay.order().queryByPartnerTradeNo("100000982014120919621");
+        WePayTransfer transfer = wepay.transfer().queryByPartnerTradeNo("100000982014120919622");
         assertNotNull(transfer);
         System.out.println(transfer);
     }
